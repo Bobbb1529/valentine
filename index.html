@@ -23,25 +23,25 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
-        overflow: hidden;
+        padding: 10px;
+        overflow-x: hidden; /* Ngăn chặn cuộn ngang */
       }
 
       .container {
         text-align: center;
-        max-width: 800px;
+        max-width: 100%;
         width: 100%;
         position: relative;
       }
 
       .instruction {
         color: #ff1493;
-        font-size: 28px;
+        font-size: clamp(18px, 5vw, 28px); /* Tự co giãn cỡ chữ */
         font-weight: bold;
         margin-bottom: 20px;
         text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
         animation: floatText 3s ease-in-out infinite;
-        height: 40px;
+        height: auto;
       }
 
       @keyframes floatText {
@@ -54,12 +54,15 @@
         }
       }
 
-      /* --- PHONG BÌ PHONG CÁCH GỐC --- */
+      /* --- PHONG BÌ RESPONSIVE --- */
       .envelope-wrapper {
         position: relative;
-        width: 550px;
-        height: 350px;
-        margin: 50px auto;
+        width: min(
+          90vw,
+          550px
+        ); /* Rộng tối đa 550px, trên mobile chiếm 90% màn hình */
+        aspect-ratio: 550 / 350; /* Giữ nguyên tỷ lệ phong bì */
+        margin: 20px auto;
         perspective: 1500px;
       }
 
@@ -71,33 +74,31 @@
         cursor: pointer;
       }
 
-      /* Lớp nền phong bì */
       .envelope-base {
         position: absolute;
         width: 100%;
         height: 100%;
         background: #ff99cc;
         border-radius: 10px;
-        box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);
+        box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
         z-index: 1;
       }
 
-      /* Nắp phong bì (Có đổ bóng như bản gốc) */
+      /* Nắp phong bì dùng clip-path để không bị hở */
       .envelope-top-flap {
         position: absolute;
-        top: 0;
+        top: -1px;
         left: 0;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 175px 275px 0 275px;
-        border-color: #ffcce0 transparent transparent transparent;
+        width: 100%;
+        height: 50.5%;
+        background-color: #ffcce0;
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
         transform-origin: top;
         transition:
           transform 0.6s ease-in-out,
           z-index 0.2s;
         z-index: 4;
-        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+        filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
       }
 
       .opened .envelope-top-flap {
@@ -105,7 +106,6 @@
         z-index: 0;
       }
 
-      /* Mặt trước (Phần túi đựng thư) */
       .envelope-front {
         position: absolute;
         width: 100%;
@@ -114,15 +114,17 @@
         pointer-events: none;
       }
 
-      /* Các miếng ghép tạo hình phong bì bản gốc */
+      /* Miếng ghép mặt trước */
       .envelope-front::before {
         content: "";
         position: absolute;
         bottom: 0;
         left: 0;
-        border-style: solid;
-        border-width: 0 0 175px 550px;
-        border-color: transparent transparent #ffb3d9 transparent;
+        width: 100%;
+        height: 100%;
+        background-color: #ffb3d9;
+        clip-path: polygon(0 100%, 100% 100%, 100% 50%, 0 50%);
+        opacity: 0.8;
       }
 
       .envelope-front::after {
@@ -130,133 +132,141 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        border-style: solid;
-        border-width: 175px 275px 175px 275px;
-        border-color: transparent #ffcce0 #ffcce0 #ffcce0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffcce0;
+        clip-path: polygon(0 100%, 50% 50%, 100% 100%);
         border-radius: 0 0 10px 10px;
       }
 
-      /* Con dấu trái tim */
       .heart-seal {
         position: absolute;
-        top: 175px;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(1);
-        width: 60px;
-        height: 60px;
+        width: clamp(40px, 10vw, 60px);
+        height: clamp(40px, 10vw, 60px);
         background: #ff1493;
         border-radius: 50%;
         z-index: 5;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 30px;
+        font-size: clamp(20px, 5vw, 30px);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         transition:
           opacity 0.3s ease,
           transform 0.3s ease;
       }
 
-      .opened .heart-seal,
-      .is-animating .heart-seal {
+      .opened .heart-seal {
         opacity: 0;
         transform: translate(-50%, -50%) scale(0);
       }
 
-      /* --- TỜ GIẤY --- */
+      /* --- TỜ THƯ TỰ CO GIÃN --- */
       .letter {
         position: absolute;
         width: 90%;
         height: 90%;
         background: #fffef9;
         left: 5%;
-        top: 25px; /* Giấu sâu để lần đầu không bị lòi */
-        padding: 30px;
+        top: 5%;
+        padding: min(25px, 4vw);
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         z-index: 2;
         transition:
           transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
           z-index 0.1s;
+        overflow: hidden;
       }
 
       .letter.up {
-        transform: translateY(-210px);
+        transform: translateY(-55%); /* Kéo lên theo tỷ lệ */
         z-index: 10;
       }
 
       .letter-content {
         opacity: 0;
         transition: opacity 0.4s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
       }
       .opened .letter-content {
         opacity: 1;
       }
 
+      .letter-content h2 {
+        font-size: clamp(16px, 4vw, 22px);
+        color: #ff1493;
+        margin-bottom: 8px;
+      }
+      .letter-content p {
+        font-size: clamp(13px, 3.5vw, 16px);
+        line-height: 1.4;
+        text-align: left;
+        color: #1b0714;
+      }
+
       .signature {
-        margin-top: 15px;
+        margin-top: auto;
         text-align: right;
         font-weight: bold;
         color: #ff1493;
+        font-size: clamp(12px, 3vw, 16px);
       }
 
-      /* Phụ kiện */
+      /* GIF TRANG TRÍ - Ẩn trên màn hình quá nhỏ để đỡ rối */
       .gif-container {
         position: absolute;
-        right: -220px;
-        top: 50%;
+        right: -120px;
+        top: 80%;
         transform: translateY(-50%);
+        z-index: 20;
       }
       .gif-container img {
-        width: 180px;
-        border-radius: 15px;
+        width: 100px;
       }
 
+      /* PHOTO OVERLAY */
       .photo-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.9);
         display: none;
         justify-content: center;
         align-items: center;
-        z-index: 2000;
+        z-index: 3000;
+        padding: 20px;
       }
       .photo-frame {
         position: relative;
-        max-width: 400px;
-        padding: 10px;
+        max-width: 90%;
+        max-height: 80vh;
         background: white;
+        padding: 10px;
         border-radius: 5px;
       }
       .photo-frame img {
         width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
       }
       .close-photo {
         position: absolute;
-        top: -35px;
-        right: -35px;
+        top: -40px;
+        right: 0;
         color: white;
-        font-size: 35px;
+        font-size: 40px;
         cursor: pointer;
       }
 
-      @media (max-width: 768px) {
-        .envelope-wrapper {
-          width: 320px;
-          height: 210px;
-        }
-        .envelope-top-flap {
-          border-width: 105px 160px 0 160px;
-        }
-        .heart-seal {
-          top: 105px;
-          width: 45px;
-          height: 45px;
-          font-size: 22px;
-        }
+      @media (max-width: 900px) {
         .gif-container {
           display: none;
         }
@@ -268,6 +278,7 @@
       <div class="instruction" id="instruction">
         Em hãy bấm vào phong bì để mở nhé!
       </div>
+
       <div class="envelope-wrapper">
         <div class="gif-container">
           <img src="uploads/Hello Kitty Pink GIF.gif" alt="Decoration" />
@@ -278,42 +289,30 @@
 
           <div class="letter" id="letter">
             <div class="letter-content">
-              <h2 style="color: #ff1493; margin-bottom: 12px; font-size: 22px">
-                Valentine Hạnh Phúc!
-              </h2>
-              <p
-                style="
-                  color: #1b0714;
-                  line-height: 1.5;
-                  text-align: left;
-                  font-size: 16px;
-                "
-              >
+              <h2>Valentine Hạnh Phúc!</h2>
+              <p>
                 Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên
                 cạnh. Em biết không, sự xuất hiện của em đã sưởi nắng ấm cho
                 anh, cho trái tim anh. Không có một bộ nhớ nào có thể chứa được
-                tình cảm của anh dành cho em. Căm ơn em và chúc em có một ngày
+                tình cảm của anh dành cho em. Cảm ơn em và chúc em có một ngày
                 Valentine tuyệt vời!
               </p>
-              <div class="signature">Gửi bé yêu của anh❤️</div>
+              <div class="signature">Gửi bé yêu của anh ❤️</div>
               <div
                 style="
-                  font-size: 12px;
+                  font-size: 11px;
                   color: #ff69b4;
-                  margin-top: 20px;
-                  cursor: pointer;
+                  margin-top: 10px;
                   text-decoration: underline;
                 "
               >
-                (Bấm vào đây để xem ảnh nhé)
+                (Bấm vào thư để xem ảnh nhé)
               </div>
             </div>
           </div>
 
           <div class="envelope-front"></div>
-
           <div class="envelope-top-flap"></div>
-
           <div class="heart-seal">❤️</div>
         </div>
       </div>
@@ -329,7 +328,6 @@
             margin-top: 10px;
             color: #ff1493;
             font-weight: bold;
-            font-size: 18px;
           "
         >
           ❤️ Chúng mình ❤️
@@ -348,36 +346,21 @@
 
       container.addEventListener("click", function () {
         if (currentState === "closed") {
-          // Ép z-index để không bị lòi ở lần đầu
-          letter.style.zIndex = "2";
           container.classList.add("opened");
           instruction.innerText = "Bấm tiếp để rút thư ra...";
           currentState = "opened";
         } else if (currentState === "opened") {
           letter.classList.add("up");
-          instruction.innerText = "Bấm để xem ảnh hoặc cất thư ❤️";
+          instruction.innerText = "Bấm vào thư để xem ảnh ❤️";
           currentState = "up";
         } else if (currentState === "up") {
-          instruction.innerText = "Đang cất thư...";
-          currentState = "closing";
-          container.classList.add("is-animating");
-
           letter.classList.remove("up");
-
-          setTimeout(() => {
-            letter.style.zIndex = "2";
-            container.classList.remove("opened");
-
-            setTimeout(() => {
-              container.classList.remove("is-animating");
-              instruction.innerText = "Bấm để mở lại nhé!";
-              currentState = "closed";
-            }, 600);
-          }, 800);
+          container.classList.remove("opened");
+          instruction.innerText = "Bấm để mở lại nhé!";
+          currentState = "closed";
         }
       });
 
-      // Mở ảnh khi click vào thư đã rút lên
       letter.addEventListener("click", function (e) {
         if (currentState === "up") {
           e.stopPropagation();
@@ -391,3 +374,4 @@
     </script>
   </body>
 </html>
+
