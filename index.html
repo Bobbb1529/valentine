@@ -166,6 +166,49 @@
         transform: translateY(clamp(-220px, -85vw, -350px));
         z-index: 10;
       }
+
+      /* --- TỜ GIẤY THỨ 2 --- */
+      .letter-two {
+        position: absolute;
+        width: 80%;
+        height: 60%;
+        background: #fff0f5;
+        left: 10%;
+        top: 20%;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(255, 20, 147, 0.2);
+        z-index: 100;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px dashed #ff69b4;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      /* Nút đóng cho tờ giấy thứ 2 */
+      .close-letter-two {
+        position: absolute;
+        top: 5px;
+        right: 10px;
+        font-size: 20px;
+        color: #ff1493;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      @keyframes popIn {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
       .letter-content {
         opacity: 0;
         transition: opacity 0.4s;
@@ -196,9 +239,10 @@
       .gif-container img {
         width: clamp(100px, 25vw, 180px);
         border-radius: 15px;
+        cursor: pointer; /* Thêm con trỏ tay để người dùng biết có thể bấm */
       }
 
-      /* --- PHẦN MỚI: SLIDER TRƯỢT NGANG --- */
+      /* SLIDER TRƯỢT NGANG */
       .photo-overlay {
         position: fixed;
         top: 0;
@@ -223,7 +267,6 @@
       .slider-track {
         display: flex;
         transition: transform 0.5s ease-in-out;
-        /* Kỹ thuật trượt ngang */
       }
       .slide-item {
         min-width: 100%;
@@ -268,13 +311,6 @@
         cursor: pointer;
         z-index: 2200;
       }
-
-      @media (max-width: 768px) {
-        .slide-item img,
-        .slide-item video {
-          max-height: clamp(250px, 60vh, 400px);
-        }
-      }
     </style>
   </head>
 
@@ -286,7 +322,11 @@
 
       <div class="envelope-wrapper">
         <div class="gif-container">
-          <img src="uploads/Hello Kitty Pink GIF.gif" alt="Decoration" />
+          <img
+            src="uploads/Hello Kitty Pink GIF.gif"
+            alt="Decoration"
+            id="kittyGif"
+          />
         </div>
 
         <div class="envelope-container" id="envelopeContainer">
@@ -329,6 +369,19 @@
             </div>
           </div>
 
+          <div class="letter-two" id="letterTwo">
+            <span class="close-letter-two" id="closeLetterTwo">&times;</span>
+            <h2
+              style="
+                color: #ff1493;
+                font-size: clamp(24px, 8vw, 36px);
+                font-family: &quot;Segoe UI&quot;, sans-serif;
+              "
+            >
+              Yêu em nhiều!! ❤️
+            </h2>
+          </div>
+
           <div class="envelope-front"></div>
           <div class="envelope-top-flap"></div>
           <div class="heart-seal">❤️</div>
@@ -338,58 +391,19 @@
 
     <div class="photo-overlay" id="photoOverlay">
       <span class="close-photo" id="closePhoto">&times;</span>
-
       <button class="nav-btn prev-btn" id="prevBtn">&#10094;</button>
       <button class="nav-btn next-btn" id="nextBtn">&#10095;</button>
-
       <div class="slider-container">
         <div class="slider-track" id="sliderTrack">
           <div class="slide-item">
             <img src="our-photo.jpg" alt="Photo 1" />
-            <p style="margin-top: 10px; color: #ff1493; font-weight: bold">
-              MusicBox❤️
-            </p>
+            <p>MusicBox❤️</p>
           </div>
-
           <div class="slide-item">
             <img src="hp1.jpg" alt="Photo 1" />
-            <p style="margin-top: 10px; color: #ff1493; font-weight: bold">
-              Hải Phòng❤️
-            </p>
+            <p>Hải Phòng❤️</p>
           </div>
-
-          <div class="slide-item">
-            <video controls>
-              <source src="photobooth.mp4" type="video/mp4" />
-              Trình duyệt không hỗ trợ video.
-            </video>
-            <p style="margin-top: 10px; color: #ff1493; font-weight: bold">
-              Photobooth❤️
-            </p>
-          </div>
-
-          <div class="slide-item">
-            <video controls>
-              <source src="video.mp4" type="video/mp4" />
-              Trình duyệt không hỗ trợ video.
-            </video>
-            <p style="margin-top: 10px; color: #ff1493; font-weight: bold">
-              Hà Nội❤️
-            </p>
-          </div>
-
-          <div class="slide-item">
-            <img src="coupic.jpg" alt="Photo 2" />
-            <p style="margin-top: 10px; color: #ff1493; font-weight: bold">
-              Chúng mình❤️
-            </p>
-          </div>
-
-          <div class="slide-item">
-            <p style="margin-bottom: 10px; color: #ff1493; font-weight: bold">
-              và còn nhiều nữa trong tương lai tới❤️
-            </p>
-          </div>
+          <div class="slide-item"><p>và còn nhiều nữa...❤️</p></div>
         </div>
       </div>
     </div>
@@ -397,22 +411,34 @@
     <script>
       const container = document.getElementById("envelopeContainer");
       const letter = document.getElementById("letter");
+      const letterTwo = document.getElementById("letterTwo");
+      const closeLetterTwo = document.getElementById("closeLetterTwo");
       const photoOverlay = document.getElementById("photoOverlay");
       const closePhoto = document.getElementById("closePhoto");
       const instruction = document.getElementById("instruction");
       const triggerSlider = document.getElementById("triggerSlider");
-
-      // Slider Logic
       const track = document.getElementById("sliderTrack");
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
       let currentIndex = 0;
       const slides = document.querySelectorAll(".slide-item");
 
+      // LOGIC MỚI CHO GIF HELLO KITTY
+      const kittyGif = document.getElementById("kittyGif");
+      kittyGif.addEventListener("click", function () {
+        // Nếu đang là Hello Kitty thì đổi sang In Love Cat, và ngược lại
+        if (this.src.includes("Hello%20Kitty%20Pink%20GIF.gif")) {
+          this.src = "In Love Cat GIF.gif";
+        } else {
+          this.src = "uploads/Hello Kitty Pink GIF.gif";
+        }
+      });
+
       let currentState = "closed";
 
       container.addEventListener("click", function () {
         if (currentState === "closed") {
+          letterTwo.style.display = "none";
           letter.style.zIndex = "2";
           container.classList.add("opened");
           instruction.innerText = "Bấm tiếp để rút thư ra...";
@@ -424,20 +450,21 @@
         }
       });
 
-      // Mở Slider khi bấm vào dòng chữ
+      closeLetterTwo.addEventListener("click", function (e) {
+        e.stopPropagation();
+        letterTwo.style.display = "none";
+      });
+
       triggerSlider.addEventListener("click", function (e) {
-        e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
+        e.stopPropagation();
         photoOverlay.style.display = "flex";
       });
 
       closePhoto.addEventListener("click", () => {
         photoOverlay.style.display = "none";
-        // Dừng video nếu đang bật khi đóng
-        const videos = document.querySelectorAll("video");
-        videos.forEach((v) => v.pause());
+        document.querySelectorAll("video").forEach((v) => v.pause());
       });
 
-      // Điều hướng Slider
       function updateSlider() {
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
       }
@@ -452,19 +479,24 @@
         updateSlider();
       });
 
-      // Hỗ trợ thu thư lại nếu bấm vào khoảng trống envelope khi đang "up"
       container.addEventListener("click", function (e) {
-        if (currentState === "up" && !letter.contains(e.target)) {
+        if (
+          currentState === "up" &&
+          !letter.contains(e.target) &&
+          !letterTwo.contains(e.target)
+        ) {
           instruction.innerText = "Đang cất thư...";
           currentState = "closing";
           container.classList.add("is-animating");
           letter.classList.remove("up");
+
           setTimeout(() => {
             container.classList.remove("opened");
             setTimeout(() => {
               container.classList.remove("is-animating");
               instruction.innerText = "Bấm để mở lại nhé!";
               currentState = "closed";
+              letterTwo.style.display = "flex";
             }, 600);
           }, 800);
         }
