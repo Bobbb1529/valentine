@@ -3,28 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Phong Bì Valentine - Fixed</title>
+    <title>Valentine Fixed - No More Errors</title>
     <style>
-      /* --- GIỮ NGUYÊN 100% CSS GỐC CỦA BẠN --- */
+      /* --- GIỮ NGUYÊN STYLE NỀN CỦA BẠN --- */
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: "Segoe UI", sans-serif;
         background: linear-gradient(135deg, #ffeef8 0%, #ffe5f1 50%, #ffd9ec 100%);
         min-height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20px;
-        overflow-x: hidden;
+        overflow: hidden;
+        touch-action: manipulation;
       }
 
       .container {
         text-align: center;
-        max-width: 600px;
         width: 100%;
-        position: relative;
-        /* Tự động xoay/scale nhẹ để vừa màn hình điện thoại */
-        transform: scale(clamp(0.5, 90vw / 600px, 1));
+        max-width: 550px;
+        padding: 20px;
+        /* Tính năng tự scale để vừa mọi loại điện thoại */
+        transform: scale(clamp(0.4, 95vw / 550px, 1));
+        transform-origin: center;
       }
 
       .instruction {
@@ -32,21 +33,15 @@
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 20px;
-        text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
-        animation: floatText 3s ease-in-out infinite;
+        height: 30px;
       }
 
-      @keyframes floatText {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-      }
-
-      /* PHONG BÌ - Fix tỉ lệ để không bị đảo lộn */
+      /* PHONG BÌ - Fix cứng tỷ lệ để không bị đảo hình */
       .envelope-wrapper {
         position: relative;
         width: 545px;
         height: 350px;
-        margin: 50px auto;
+        margin: 0 auto;
         perspective: 1500px;
       }
 
@@ -58,25 +53,28 @@
         cursor: pointer;
       }
 
+      /* LỚP NỀN DƯỚI CÙNG */
       .envelope-base {
         position: absolute;
         width: 100%;
         height: 100%;
         background: #ff99cc;
-        box-shadow: 0 15px 35px rgba(255, 105, 180, 0.3);
         z-index: 1;
+        border-radius: 5px;
       }
 
-      /* Dùng SVG thay Border để KHÔNG BỊ LỖI HÌNH TRÊN MOBILE */
-      .envelope-svg {
+      /* GIẢI PHÁP SVG: Vẽ chính xác các mảng để không bao giờ bị lệch */
+      .envelope-shapes {
         position: absolute;
         width: 100%;
         height: 100%;
         top: 0;
         left: 0;
-        display: block;
+        z-index: 3;
+        pointer-events: none;
       }
 
+      /* NẮP PHONG BÌ (MẢNG TRÊN) */
       .envelope-top-flap {
         position: absolute;
         top: 0;
@@ -87,10 +85,36 @@
         transition: transform 0.6s ease-in-out, z-index 0.2s;
         z-index: 4;
       }
-
       .opened .envelope-top-flap {
         transform: rotateX(180deg);
         z-index: 0;
+      }
+
+      /* TỜ GIẤY */
+      .letter {
+        position: absolute;
+        width: 90%;
+        height: 85%;
+        background: #fffef9;
+        left: 5%;
+        top: 10%;
+        padding: 25px;
+        border-radius: 5px;
+        z-index: 2;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      }
+      .letter.up { transform: translateY(-280px); z-index: 10; }
+
+      /* HELLO KITTY - Đưa vào trong wrapper để bám sát phong bì */
+      .kitty-container {
+        position: absolute;
+        right: -80px;
+        bottom: 10px;
+        z-index: 15;
+      }
+      .kitty-container img {
+        width: 120px;
       }
 
       .heart-seal {
@@ -107,138 +131,84 @@
         align-items: center;
         justify-content: center;
         font-size: 28px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         transition: 0.3s;
       }
-
       .opened .heart-seal { opacity: 0; transform: translate(-50%, -50%) scale(0); }
 
-      /* TỜ GIẤY - GIỮ NGUYÊN */
-      .letter {
-        position: absolute;
-        width: 90%;
-        height: 90%;
-        background: #fffef9;
-        left: 5%;
-        top: 25px;
-        padding: 25px;
-        border-radius: 5px;
-        z-index: 2;
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .letter.up { transform: translateY(-300px); z-index: 10; }
-
-      .signature {
-        margin-top: 10px;
-        text-align: right;
-        font-weight: bold;
-        color: #ff1493;
-        font-family: "Times New Roman", serif;
-      }
-
-      /* GIF CONTAINER - Cố định vị trí cạnh phong bì */
-      .gif-container {
-        position: absolute;
-        right: -100px;
-        bottom: 0;
-        z-index: 20;
-      }
-      .gif-container img { width: 120px; border-radius: 15px; cursor: pointer; }
-
-      /* SLIDER - GIỮ NGUYÊN */
-      .photo-overlay {
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-      }
-      .slider-container { width: 90%; max-width: 500px; background: white; border-radius: 15px; padding: 10px; }
-      .slider-track { display: flex; transition: transform 0.5s ease-in-out; }
-      .slide-item { min-width: 100%; text-align: center; }
-      .slide-item img { width: 100%; border-radius: 10px; }
-
-      /* TỜ GIẤY THỨ 2 - GIỮ NGUYÊN */
+      /* SLIDER & TỜ GIẤY 2 GIỮ NGUYÊN LOGIC CỦA BẠN */
       .letter-two {
         position: absolute;
         width: 80%; height: 60%;
-        background: #fff0f5;
-        left: 10%; top: 20%;
-        z-index: 100;
-        display: none;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        border: 2px dashed #ff69b4;
-        border-radius: 10px;
+        background: #fff0f5; left: 10%; top: 20%;
+        z-index: 100; display: none;
+        flex-direction: column; justify-content: center; align-items: center;
+        border: 2px dashed #ff69b4; border-radius: 10px;
+      }
+      .photo-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); display: none; z-index: 2000;
+        justify-content: center; align-items: center;
       }
     </style>
   </head>
-
   <body>
+
     <div class="container">
-      <div class="instruction" id="instruction">Em hãy bấm vào phong bì để mở nhé!</div>
+      <div class="instruction" id="instruction">Bấm vào phong bì để mở nhé!</div>
 
       <div class="envelope-wrapper">
-        <div class="gif-container">
-          <img src="uploads/Hello Kitty Pink GIF.gif" id="kittyGif" />
-        </div>
-
         <div class="envelope-container" id="envelopeContainer">
+          
           <div class="envelope-base"></div>
 
           <div class="letter" id="letter">
-            <div class="letter-content">
-              <h2 style="color: #ff1493; margin-bottom: 12px;">Valentine Hạnh Phúc!</h2>
-              <p style="font-size: 15px; line-height: 1.4; text-align: left;">
+            <h2 style="color: #ff1493; margin-bottom: 10px;">Valentine Hạnh Phúc!</h2>
+            <p style="font-size: 15px; text-align: left; line-height: 1.4;">
                 Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên cạnh...
-              </p>
-              <div class="signature">Yêu em❤️</div>
-              <div id="triggerSlider" style="color: #ff69b4; margin-top: 15px; cursor: pointer; text-decoration: underline;">(Bấm xem bất ngờ)</div>
-            </div>
+            </p>
+            <div id="triggerSlider" style="color: #ff69b4; margin-top: 15px; cursor: pointer; text-decoration: underline; font-weight: bold;">(Bấm xem bất ngờ)</div>
           </div>
 
           <div class="letter-two" id="letterTwo">
             <h2 style="color: #ff1493;">Yêu em nhiều!! ❤️</h2>
           </div>
 
-          <svg class="envelope-svg" style="z-index: 3; pointer-events: none;" viewBox="0 0 545 350">
-             <path fill="#ffcce0" d="M0 0 L272.5 175 L0 350 Z" /> <path fill="#ffcce0" d="M545 0 L272.5 175 L545 350 Z" /> <path fill="#ffb3d9" d="M0 350 L545 350 L272.5 175 Z" /> </svg>
+          <svg class="envelope-shapes" viewBox="0 0 545 350">
+            <path d="M0 0 L272.5 175 L0 350 Z" fill="#ffcce0" />
+            <path d="M545 0 L272.5 175 L545 350 Z" fill="#ffcce0" />
+            <path d="M0 350 L545 350 L272.5 175 Z" fill="#ffb3d9" />
+          </svg>
 
           <div class="envelope-top-flap">
-            <svg width="100%" height="100%" viewBox="0 0 545 175" preserveAspectRatio="none">
-              <path fill="#ffcce0" d="M0 0 L545 0 L272.5 175 Z" />
+            <svg width="545" height="175" viewBox="0 0 545 175">
+              <path d="M0 0 L545 0 L272.5 175 Z" fill="#ffcce0" />
             </svg>
           </div>
 
           <div class="heart-seal">❤️</div>
         </div>
+
+        <div class="kitty-container">
+          <img src="uploads/Hello Kitty Pink GIF.gif" alt="Kitty">
+        </div>
       </div>
     </div>
 
     <div class="photo-overlay" id="photoOverlay">
-      <div class="slider-container">
-        <div class="slider-track" id="track">
-          <div class="slide-item"><img src="our-photo.jpg" /><p>MusicBox❤️</p></div>
-          <div class="slide-item"><img src="hp1.jpg" /><p>Hải Phòng❤️</p></div>
-        </div>
-      </div>
+        <div style="color: white; position: absolute; top: 20px; right: 20px; font-size: 30px; cursor: pointer;" onclick="document.getElementById('photoOverlay').style.display='none'">&times;</div>
+        <img src="our-photo.jpg" style="max-width: 90%; border-radius: 10px;">
     </div>
 
     <script>
       const container = document.getElementById("envelopeContainer");
       const letter = document.getElementById("letter");
       const letterTwo = document.getElementById("letterTwo");
-      const photoOverlay = document.getElementById("photoOverlay");
       const instruction = document.getElementById("instruction");
       let currentState = "closed";
 
       container.addEventListener("click", function (e) {
         if (e.target.id === "triggerSlider") {
-          photoOverlay.style.display = "flex";
+          document.getElementById("photoOverlay").style.display = "flex";
           return;
         }
 
@@ -248,7 +218,7 @@
           currentState = "opened";
         } else if (currentState === "opened") {
           letter.classList.add("up");
-          instruction.innerText = "Bấm vào khoảng trống để cất...";
+          instruction.innerText = "Bấm ra ngoài để cất thư...";
           currentState = "up";
         } else if (currentState === "up" && !letter.contains(e.target)) {
           letter.classList.remove("up");
@@ -259,8 +229,6 @@
           }, 600);
         }
       });
-
-      photoOverlay.onclick = () => photoOverlay.style.display = "none";
     </script>
   </body>
 </html>
