@@ -3,267 +3,213 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Phong Bì Valentine - Perfect Fit</title>
+    <title>Phong Bì Valentine - Fixed</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ffeef8 0%, #ffe5f1 50%, #ffd9ec 100%);
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffd9ec 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            overflow: hidden;
             padding: 20px;
         }
 
         .container {
             text-align: center;
             width: 100%;
-            max-width: 600px; /* Giới hạn độ rộng để không bị quá to trên PC */
+            max-width: 550px;
             position: relative;
         }
 
         .instruction {
             color: #ff1493;
-            font-size: clamp(16px, 5vw, 24px);
+            font-size: clamp(16px, 5vw, 22px);
             font-weight: bold;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
-            animation: floatText 3s ease-in-out infinite;
-            height: 40px;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 5px rgba(255, 105, 180, 0.2);
         }
 
-        @keyframes floatText {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* --- PHONG BÌ RESPONSIVE --- */
+        /* KHUNG PHONG BÌ */
         .envelope-wrapper {
             position: relative;
-            width: 100%; /* Tự động co dãn theo chiều rộng màn hình */
-            max-width: 500px;
-            aspect-ratio: 545 / 350; /* Giữ đúng tỉ lệ phong bì gốc */
+            width: 100%;
+            aspect-ratio: 545 / 350;
+            perspective: 1000px;
             margin: 0 auto;
-            perspective: 1500px;
         }
 
         .envelope-container {
             position: relative;
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
             cursor: pointer;
+            transform-style: preserve-3d;
         }
 
-        .envelope-base {
+        /* SVG LÀM NỀN PHONG BÌ */
+        .envelope-svg {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: #ff99cc;
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
-            z-index: 1;
+            top: 0;
+            left: 0;
+            display: block;
         }
 
-        /* Nắp trên - Vẽ bằng border-width tỉ lệ % để không bao giờ hở */
-        .envelope-top-flap {
+        .base-rect { fill: #ff99cc; }
+        .front-left-right { fill: #ffcce0; }
+        .front-bottom { fill: #ffb3d9; }
+        .top-flap-color { fill: #ffd9ec; stroke: #ffb3d9; stroke-width: 1; }
+
+        /* NẮP PHONG BÌ */
+        .top-flap {
             position: absolute;
             top: 0;
             left: 0;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 16vw 46vw 0 46vw; /* Tỉ lệ động theo chiều rộng */
-            border-color: #ffcce0 transparent transparent transparent;
+            width: 100%;
+            height: 50%;
             transform-origin: top;
-            transition: transform 0.6s ease-in-out, z-index 0.2s;
+            transition: transform 0.6s ease-in-out;
             z-index: 4;
         }
 
-        /* Fix cho màn hình lớn (PC) để border không bị vỡ */
-        @media (min-width: 600px) {
-            .envelope-top-flap {
-                border-width: 160px 250px 0 250px;
-            }
-        }
-
-        .opened .envelope-top-flap {
+        .opened .top-flap {
             transform: rotateX(180deg);
-            z-index: 0;
+            z-index: 1;
         }
 
-        .envelope-front {
+        /* TỜ THƯ */
+        .letter {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
+            width: 90%;
+            height: 85%;
+            background: #fffef9;
+            left: 5%;
+            top: 5%;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2;
+            transition: transform 0.7s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        /* Vẽ mặt trước bằng Clip-path để đảm bảo khít tuyệt đối */
-        .envelope-front::before {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffb3d9;
-            clip-path: polygon(0 100%, 100% 100%, 50% 50%);
+        .letter.up {
+            transform: translateY(-80%);
+            z-index: 10;
         }
 
-        .envelope-front::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffcce0;
-            clip-path: polygon(0 0, 50% 50%, 0 100%, 100% 100%, 50% 50%, 100% 0);
-        }
+        .letter-content { opacity: 0; transition: 0.3s; }
+        .opened .letter-content { opacity: 1; }
+        .letter-content h2 { color: #ff1493; font-size: 1.2rem; margin-bottom: 10px; }
+        .letter-content p { font-size: 0.9rem; line-height: 1.5; color: #333; }
 
         .heart-seal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: clamp(40px, 10vw, 60px);
-            height: clamp(40px, 10vw, 60px);
+            width: 50px;
+            height: 50px;
             background: #ff1493;
             border-radius: 50%;
             z-index: 5;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            color: white;
+            font-size: 24px;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .opened .heart-seal { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+        .opened .heart-seal { opacity: 0; pointer-events: none; }
 
-        /* --- THƯ --- */
-        .letter {
+        /* KITTY GIF */
+        .kitty {
             position: absolute;
-            width: 90%;
-            height: 80%;
-            background: white;
-            left: 5%;
-            top: 10%;
-            padding: 20px;
-            border-radius: 5px;
-            z-index: 2;
-            transition: transform 0.7s ease-in-out;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        .letter.up { transform: translateY(-70%); z-index: 10; }
-
-        .letter-content h2 { color: #ff1493; font-size: clamp(16px, 4vw, 22px); margin-bottom: 10px; }
-        .letter-content p { font-size: clamp(13px, 3.5vw, 15px); line-height: 1.5; color: #333; text-align: left; }
-
-        /* Kitty GIF */
-        .gif-container {
-            position: absolute;
-            right: -15%;
+            right: -50px;
             bottom: 0;
-            width: 25%;
+            width: 80px;
             z-index: 20;
         }
-        .gif-container img { width: 100%; }
-
-        /* Modal ảnh */
-        .photo-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95);
-            display: none; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .slider-container { width: 90%; max-width: 450px; position: relative; background: white; padding: 10px; border-radius: 10px; }
-        .slider-track { display: flex; transition: 0.5s; overflow: hidden; }
-        .slide-item { min-width: 100%; text-align: center; }
-        .slide-item img { width: 100%; border-radius: 8px; }
-        .close-photo { position: absolute; top: -45px; right: 0; color: white; font-size: 40px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="instruction" id="instruction">Em hãy bấm vào phong bì để mở nhé!</div>
-        
-        <div class="envelope-wrapper">
-            <div class="gif-container">
-                <img src="uploads/Hello Kitty Pink GIF.gif" id="kittyGif" />
-            </div>
+<div class="container">
+    <div class="instruction" id="instruction">Bấm vào phong bì để mở nhé!</div>
+    
+    <div class="envelope-wrapper">
+        <img src="uploads/Hello Kitty Pink GIF.gif" class="kitty" id="kittyGif">
 
-            <div class="envelope-container" id="envelopeContainer">
-                <div class="envelope-base"></div>
-                
-                <div class="letter" id="letter">
-                    <div class="letter-content">
-                        <h2>Valentine Hạnh Phúc!</h2>
-                        <p>Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên cạnh. Chúc em một ngày thật tuyệt vời!</p>
-                        <div id="triggerSlider" style="margin-top:15px; color:#ff1493; font-weight:bold; text-decoration:underline; cursor:pointer;">
-                            (Bấm vào đây để xem bất ngờ)
-                        </div>
-                    </div>
+        <div class="envelope-container" id="envelopeContainer">
+            <svg class="envelope-svg" viewBox="0 0 545 350">
+                <rect class="base-rect" width="545" height="350" />
+            </svg>
+
+            <div class="letter" id="letter">
+                <div class="letter-content">
+                    <h2>Valentine Hạnh Phúc! ❤️</h2>
+                    <p>Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên cạnh. Chúc em một ngày thật tuyệt vời!</p>
+                    <p style="margin-top:10px; font-weight:bold; color:#ff1493; cursor:pointer; text-decoration:underline;" id="triggerSlider">
+                        (Bấm để xem bất ngờ)
+                    </p>
                 </div>
-
-                <div class="envelope-front"></div>
-                <div class="envelope-top-flap"></div>
-                <div class="heart-seal">❤️</div>
             </div>
+
+            <svg class="envelope-svg" style="z-index: 3; pointer-events: none;" viewBox="0 0 545 350">
+                <path class="front-left-right" d="M0 0 L272.5 175 L0 350 Z" />
+                <path class="front-left-right" d="M545 0 L272.5 175 L545 350 Z" />
+                <path class="front-bottom" d="M0 350 L545 350 L272.5 175 Z" />
+            </svg>
+
+            <div class="top-flap">
+                <svg width="100%" height="100%" viewBox="0 0 545 175" preserveAspectRatio="none">
+                    <path class="top-flap-color" d="M0 0 L545 0 L272.5 175 Z" />
+                </svg>
+            </div>
+
+            <div class="heart-seal">❤️</div>
         </div>
     </div>
+</div>
 
-    <div class="photo-overlay" id="photoOverlay">
-        <div class="slider-container">
-            <span class="close-photo" id="closePhoto">&times;</span>
-            <div class="slider-track" id="sliderTrack">
-                <div class="slide-item"><img src="our-photo.jpg" /><p>Kỷ niệm của chúng mình ❤️</p></div>
-                <div class="slide-item"><img src="hp1.jpg" /><p>Hải Phòng ngày ấy ❤️</p></div>
-            </div>
-        </div>
-    </div>
+<script>
+    const container = document.getElementById("envelopeContainer");
+    const letter = document.getElementById("letter");
+    const instruction = document.getElementById("instruction");
+    let step = 0;
 
-    <script>
-        const container = document.getElementById("envelopeContainer");
-        const letter = document.getElementById("letter");
-        const instruction = document.getElementById("instruction");
-        let state = "closed";
+    container.addEventListener("click", function(e) {
+        if(e.target.id === "triggerSlider") return;
 
-        container.addEventListener("click", function(e) {
-            if(e.target.id === "triggerSlider") return;
+        if (step === 0) {
+            this.classList.add("opened");
+            instruction.innerText = "Bấm tiếp để rút thư...";
+            step = 1;
+        } else if (step === 1) {
+            letter.classList.add("up");
+            instruction.innerText = "Yêu em nhiều! ❤️";
+            step = 2;
+        } else {
+            letter.classList.remove("up");
+            this.classList.remove("opened");
+            instruction.innerText = "Bấm để mở lại nhé!";
+            step = 0;
+        }
+    });
 
-            if (state === "closed") {
-                this.classList.add("opened");
-                instruction.innerText = "Bấm tiếp để rút thư ra...";
-                state = "opened";
-            } else if (state === "opened") {
-                letter.classList.add("up");
-                instruction.innerText = "Bấm vào nội dung thư nhé ❤️";
-                state = "up";
-            } else {
-                letter.classList.remove("up");
-                this.classList.remove("opened");
-                instruction.innerText = "Bấm để mở lại nhé!";
-                state = "closed";
-            }
-        });
+    document.getElementById("triggerSlider").addEventListener("click", (e) => {
+        e.stopPropagation();
+        alert("Chức năng xem ảnh đang được mở..."); // Bạn có thể thêm modal ảnh của mình vào đây
+    });
+</script>
 
-        document.getElementById("triggerSlider").onclick = (e) => {
-            e.stopPropagation();
-            document.getElementById("photoOverlay").style.display = "flex";
-        };
-
-        document.getElementById("closePhoto").onclick = () => {
-            document.getElementById("photoOverlay").style.display = "none";
-        };
-    </script>
 </body>
 </html>
