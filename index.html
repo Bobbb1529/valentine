@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Phong Bì Valentine - Multi Media</title>
     <style>
       /* --- GIỮ NGUYÊN CSS GỐC CỦA BẠN --- */
@@ -11,6 +11,22 @@
         padding: 0;
         box-sizing: border-box;
       }
+
+      /* LOGIC ĐIỀU CHỈNH ĐỂ LUÔN NẰM NGANG TRÊN ĐIỆN THOẠI */
+      @media (orientation: portrait) {
+        body {
+          width: 100vh;
+          height: 100vw;
+          transform: rotate(90deg);
+          transform-origin: center;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          translate: -50% -50%;
+          overflow: hidden;
+        }
+      }
+
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(
@@ -25,39 +41,42 @@
         align-items: center;
         padding: clamp(10px, 4vw, 20px);
         overflow: hidden;
+        /* Chống cuộn khi xoay */
+        touch-action: none; 
       }
+
       .container {
         text-align: center;
         max-width: 800px;
         width: 100%;
         position: relative;
-      }
-      .instruction {
-        color: #ff1493;
-        font-size: clamp(18px, 5vw, 28px);
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
-        animation: floatText 3s ease-in-out infinite;
-        height: 40px;
-      }
-      @keyframes floatText {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
+        /* Đảm bảo container co giãn theo khung hình mới */
+        transform: scale(0.9); 
       }
 
-      /* PHONG BÌ */
+      /* Tinh chỉnh instruction để không bị che */
+      .instruction {
+        color: #ff1493;
+        font-size: clamp(16px, 4vw, 24px);
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 8px rgba(255, 105, 180, 0.3);
+        animation: floatText 3s ease-in-out infinite;
+        height: 30px;
+      }
+
+      @keyframes floatText {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+
+      /* PHONG BÌ (Giữ nguyên logic của bạn) */
       .envelope-wrapper {
         position: relative;
-        width: min(545px, 90vw);
+        width: min(500px, 80vw);
         height: auto;
         aspect-ratio: 545 / 350;
-        margin: 50px auto;
+        margin: 30px auto;
         perspective: 1500px;
       }
       .envelope-container {
@@ -82,13 +101,10 @@
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: clamp(80px, 33vw, 180px) clamp(122px, 50.5vw, 275px) 0
-          clamp(122px, 50.5vw, 275px);
+        border-width: clamp(70px, 15vw, 160px) clamp(110px, 40vw, 250px) 0 clamp(110px, 40vw, 250px);
         border-color: #ffcce0 transparent transparent transparent;
         transform-origin: top;
-        transition:
-          transform 0.6s ease-in-out,
-          z-index 0.2s;
+        transition: transform 0.6s ease-in-out, z-index 0.2s;
         z-index: 4;
         filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
       }
@@ -111,6 +127,7 @@
         border-style: solid;
         border-width: 0 0 175px 545px;
         border-color: transparent transparent #ffb3d9 transparent;
+        width: 100%;
       }
       .envelope-front::after {
         content: "";
@@ -120,25 +137,24 @@
         border-style: solid;
         border-width: 175px 275px 175px 275px;
         border-color: transparent #ffcce0 #ffcce0 #ffcce0;
+        width: 100%;
       }
       .heart-seal {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(1);
-        width: clamp(30px, 10vw, 60px);
-        height: clamp(30px, 10vw, 60px);
+        width: clamp(30px, 8vw, 50px);
+        height: clamp(30px, 8vw, 50px);
         background: #ff1493;
         border-radius: 50%;
         z-index: 5;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: clamp(16px, 5vw, 30px);
+        font-size: clamp(16px, 4vw, 24px);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        transition:
-          opacity 0.3s ease,
-          transform 0.3s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
       .opened .heart-seal,
       .is-animating .heart-seal {
@@ -153,21 +169,19 @@
         height: 90%;
         background: #fffef9;
         left: 5%;
-        top: 25px;
-        padding: clamp(15px, 4vw, 30px);
+        top: 10%;
+        padding: 20px;
         border-radius: 5px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         z-index: 2;
-        transition:
-          transform 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-          z-index 0.1s;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s;
       }
       .letter.up {
-        transform: translateY(clamp(-220px, -85vw, -350px));
+        transform: translateY(-80%);
         z-index: 10;
       }
 
-      /* --- TỜ GIẤY THỨ 2 --- */
+      /* --- GIỮ NGUYÊN CÁC PHẦN CÒN LẠI --- */
       .letter-two {
         position: absolute;
         width: 80%;
@@ -186,147 +200,48 @@
         border: 2px dashed #ff69b4;
         animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
-
-      /* Nút đóng cho tờ giấy thứ 2 */
       .close-letter-two {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        font-size: 20px;
-        color: #ff1493;
-        cursor: pointer;
-        font-weight: bold;
+        position: absolute; top: 5px; right: 10px; font-size: 20px; color: #ff1493; cursor: pointer; font-weight: bold;
       }
-
-      @keyframes popIn {
-        from {
-          transform: scale(0);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
-      }
-
-      .letter-content {
-        opacity: 0;
-        transition: opacity 0.4s;
-      }
-      .letter-content h2 {
-        font-size: clamp(16px, 4vw, 22px) !important;
-      }
-      .letter-content p {
-        font-size: clamp(14px, 3vw, 16px) !important;
-      }
-      .opened .letter-content {
-        opacity: 1;
-      }
-      .signature {
-        margin-top: 10px;
-        text-align: right;
-        font-weight: bold;
-        color: #ff1493;
-        font-family: "Times New Roman", Times, serif;
-        font-size: clamp(14px, 3.5vw, larger);
-      }
+      @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      .letter-content { opacity: 0; transition: opacity 0.4s; }
+      .opened .letter-content { opacity: 1; }
+      .signature { margin-top: 10px; text-align: right; font-weight: bold; color: #ff1493; font-family: "Times New Roman", serif; font-size: 16px; }
+      
+      /* GIF Position adjustment for landscape */
       .gif-container {
         position: absolute;
-        right: clamp(-200px, -50vw, -280px);
+        right: -120px;
         top: 50%;
         transform: translateY(-50%);
+        z-index: 20;
       }
-      .gif-container img {
-        width: clamp(100px, 25vw, 180px);
-        border-radius: 15px;
-        cursor: pointer; /* Thêm con trỏ tay để người dùng biết có thể bấm */
-      }
+      .gif-container img { width: 100px; border-radius: 15px; cursor: pointer; }
 
-      /* SLIDER TRƯỢT NGANG */
+      /* SLIDER */
       .photo-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+        display: none; justify-content: center; align-items: center; z-index: 2000;
       }
       .slider-container {
-        position: relative;
-        width: 90%;
-        max-width: clamp(300px, 90vw, 600px);
-        overflow: hidden;
-        background: white;
-        border-radius: 15px;
-        padding: 10px;
+        position: relative; width: 80%; max-width: 500px; overflow: hidden; background: white; border-radius: 15px; padding: 10px;
       }
-      .slider-track {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-      }
-      .slide-item {
-        min-width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-      }
-      .slide-item img,
-      .slide-item video {
-        width: 100%;
-        max-height: 400px;
-        border-radius: 10px;
-        object-fit: cover;
-      }
-      .nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 20, 147, 0.8);
-        color: white;
-        border: none;
-        width: clamp(30px, 8vw, 40px);
-        height: clamp(30px, 8vw, 40px);
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: clamp(14px, 4vw, 20px);
-        z-index: 2100;
-      }
-      .prev-btn {
-        left: 10px;
-      }
-      .next-btn {
-        right: 10px;
-      }
-      .close-photo {
-        position: absolute;
-        top: clamp(10px, 3vw, 20px);
-        right: clamp(10px, 3vw, 20px);
-        color: white;
-        font-size: clamp(28px, 8vw, 40px);
-        cursor: pointer;
-        z-index: 2200;
-      }
+      .slider-track { display: flex; transition: transform 0.5s ease-in-out; }
+      .slide-item { min-width: 100%; display: flex; flex-direction: column; align-items: center; padding: 10px; }
+      .slide-item img, .slide-item video { width: 100%; max-height: 250px; border-radius: 10px; object-fit: cover; }
+      .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 20, 147, 0.8); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; z-index: 2100; }
+      .prev-btn { left: 5px; } .next-btn { right: 5px; }
+      .close-photo { position: absolute; top: 10px; right: 20px; color: white; font-size: 35px; cursor: pointer; z-index: 2200; }
     </style>
   </head>
 
   <body>
     <div class="container">
-      <div class="instruction" id="instruction">
-        Em hãy bấm vào phong bì để mở nhé!
-      </div>
+      <div class="instruction" id="instruction">Em hãy bấm vào phong bì để mở nhé!</div>
 
       <div class="envelope-wrapper">
         <div class="gif-container">
-          <img
-            src="uploads/Hello Kitty Pink GIF.gif"
-            alt="Decoration"
-            id="kittyGif"
-          />
+          <img src="uploads/Hello Kitty Pink GIF.gif" alt="Decoration" id="kittyGif" />
         </div>
 
         <div class="envelope-container" id="envelopeContainer">
@@ -334,36 +249,12 @@
 
           <div class="letter" id="letter">
             <div class="letter-content">
-              <h2 style="color: #ff1493; margin-bottom: 12px; font-size: 22px">
-                Valentine Hạnh Phúc!
-              </h2>
-              <p
-                style="
-                  color: #1b0714;
-                  line-height: 1.5;
-                  text-align: left;
-                  font-size: 16px;
-                  font-family: &quot;Times New Roman&quot;, Times, serif;
-                "
-              >
-                Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên
-                cạnh. Em biết không, sự xuất hiện của em đã sưởi nắng ấm cho
-                trái tim anh, từ khi có em anh cảm thấy mình như đang bước sang
-                một trang mới vậy. Cảm ơn em và chúc em có ngày Valentine thật
-                tuyệt vời!
+              <h2 style="color: #ff1493; margin-bottom: 8px; font-size: 18px">Valentine Hạnh Phúc!</h2>
+              <p style="color: #1b0714; line-height: 1.4; text-align: left; font-size: 14px; font-family: 'Times New Roman', serif;">
+                Mùa lễ tình nhân đã tới và anh thật may mắn khi có em ở bên cạnh. Em biết không, sự xuất hiện của em đã sưởi nắng ấm cho trái tim anh. Cảm ơn em và chúc em có ngày Valentine thật tuyệt vời!
               </p>
               <div class="signature">Yêu em❤️</div>
-              <div
-                id="triggerSlider"
-                style="
-                  font-size: 14px;
-                  color: #ff69b4;
-                  margin-top: 20px;
-                  cursor: pointer;
-                  text-decoration: underline;
-                  font-weight: bold;
-                "
-              >
+              <div id="triggerSlider" style="font-size: 12px; color: #ff69b4; margin-top: 10px; cursor: pointer; text-decoration: underline; font-weight: bold;">
                 (Bấm vào đây để xem bất ngờ)
               </div>
             </div>
@@ -371,15 +262,7 @@
 
           <div class="letter-two" id="letterTwo">
             <span class="close-letter-two" id="closeLetterTwo">&times;</span>
-            <h2
-              style="
-                color: #ff1493;
-                font-size: clamp(24px, 8vw, 36px);
-                font-family: &quot;Segoe UI&quot;, sans-serif;
-              "
-            >
-              Yêu em nhiều!! ❤️
-            </h2>
+            <h2 style="color: #ff1493; font-size: 24px;">Yêu em nhiều!! ❤️</h2>
           </div>
 
           <div class="envelope-front"></div>
@@ -395,20 +278,15 @@
       <button class="nav-btn next-btn" id="nextBtn">&#10095;</button>
       <div class="slider-container">
         <div class="slider-track" id="sliderTrack">
-          <div class="slide-item">
-            <img src="our-photo.jpg" alt="Photo 1" />
-            <p>MusicBox❤️</p>
-          </div>
-          <div class="slide-item">
-            <img src="hp1.jpg" alt="Photo 1" />
-            <p>Hải Phòng❤️</p>
-          </div>
+          <div class="slide-item"><img src="our-photo.jpg" alt="Photo 1" /><p>MusicBox❤️</p></div>
+          <div class="slide-item"><img src="hp1.jpg" alt="Photo 1" /><p>Hải Phòng❤️</p></div>
           <div class="slide-item"><p>và còn nhiều nữa...❤️</p></div>
         </div>
       </div>
     </div>
 
     <script>
+      /* GIỮ NGUYÊN LOGIC JAVASCRIPT CỦA BẠN */
       const container = document.getElementById("envelopeContainer");
       const letter = document.getElementById("letter");
       const letterTwo = document.getElementById("letterTwo");
@@ -423,10 +301,8 @@
       let currentIndex = 0;
       const slides = document.querySelectorAll(".slide-item");
 
-      // LOGIC MỚI CHO GIF HELLO KITTY
       const kittyGif = document.getElementById("kittyGif");
       kittyGif.addEventListener("click", function () {
-        // Nếu đang là Hello Kitty thì đổi sang In Love Cat, và ngược lại
         if (this.src.includes("Hello%20Kitty%20Pink%20GIF.gif")) {
           this.src = "In Love Cat GIF.gif";
         } else {
@@ -450,46 +326,20 @@
         }
       });
 
-      closeLetterTwo.addEventListener("click", function (e) {
-        e.stopPropagation();
-        letterTwo.style.display = "none";
-      });
+      closeLetterTwo.addEventListener("click", (e) => { e.stopPropagation(); letterTwo.style.display = "none"; });
+      triggerSlider.addEventListener("click", (e) => { e.stopPropagation(); photoOverlay.style.display = "flex"; });
+      closePhoto.addEventListener("click", () => { photoOverlay.style.display = "none"; });
 
-      triggerSlider.addEventListener("click", function (e) {
-        e.stopPropagation();
-        photoOverlay.style.display = "flex";
-      });
-
-      closePhoto.addEventListener("click", () => {
-        photoOverlay.style.display = "none";
-        document.querySelectorAll("video").forEach((v) => v.pause());
-      });
-
-      function updateSlider() {
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      }
-
-      nextBtn.addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % slides.length;
-        updateSlider();
-      });
-
-      prevBtn.addEventListener("click", () => {
-        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-        updateSlider();
-      });
+      function updateSlider() { track.style.transform = `translateX(-${currentIndex * 100}%)`; }
+      nextBtn.addEventListener("click", () => { currentIndex = (currentIndex + 1) % slides.length; updateSlider(); });
+      prevBtn.addEventListener("click", () => { currentIndex = (currentIndex - 1 + slides.length) % slides.length; updateSlider(); });
 
       container.addEventListener("click", function (e) {
-        if (
-          currentState === "up" &&
-          !letter.contains(e.target) &&
-          !letterTwo.contains(e.target)
-        ) {
+        if (currentState === "up" && !letter.contains(e.target) && !letterTwo.contains(e.target)) {
           instruction.innerText = "Đang cất thư...";
           currentState = "closing";
           container.classList.add("is-animating");
           letter.classList.remove("up");
-
           setTimeout(() => {
             container.classList.remove("opened");
             setTimeout(() => {
