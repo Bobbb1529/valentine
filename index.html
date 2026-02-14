@@ -23,19 +23,43 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 10px; /* Giảm padding một chút cho mobile */
+        padding: 10px;
         overflow: hidden;
       }
       
-      /* PHẦN SỬA ĐỂ VỪA IPHONE 15 PRO MAX */
+      /* PHẦN ĐIỀU CHỈNH ĐỂ TỰ ĐỘNG XOAY VÀ VỪA IPHONE 15 PRO MAX */
       .container {
         text-align: center;
         max-width: 800px;
         width: 100%;
         position: relative;
-        /* Thêm dòng này: Tự động co nhỏ toàn bộ nếu màn hình nhỏ hơn 600px */
+        /* Scale tự động dựa trên chiều rộng màn hình dọc */
         transform: scale(clamp(0.1, 95vw / 600px, 1));
         transform-origin: center center;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* LOGIC KHI XOAY NGANG (LANDSCAPE) */
+      @media (orientation: landscape) {
+        .container {
+          /* Khi xoay ngang, dùng chiều cao (vh) để tính toán scale, tránh bị tràn trên dưới */
+          transform: scale(clamp(0.1, 85vh / 450px, 0.75)); 
+          margin-top: 20px;
+        }
+        .instruction {
+          font-size: 20px !important;
+          margin-bottom: 5px !important;
+        }
+        .envelope-wrapper {
+          margin: 20px auto !important;
+        }
+        .letter.up {
+          /* Khi xoay ngang, thư bay lên ít hơn để không khuất nội dung */
+          transform: translateY(-280px) !important;
+        }
+        .gif-container {
+            right: -120px !important; /* Thu nhỏ khoảng cách Kitty khi xoay ngang */
+        }
       }
 
       .instruction {
@@ -52,10 +76,10 @@
         50% { transform: translateY(-10px); }
       }
 
-      /* PHONG BÌ - GIỮ NGUYÊN THÔNG SỐ CŨ */
+      /* PHONG BÌ */
       .envelope-wrapper {
         position: relative;
-        width: 545px; /* Giữ nguyên kích thước gốc để không hỏng border */
+        width: 545px;
         height: 350px;
         margin: 50px auto;
         perspective: 1500px;
@@ -82,7 +106,7 @@
         width: 0;
         height: 0;
         border-style: solid;
-        border-width: 180px 272.5px 0 272.5px; /* Cố định con số để tránh đảo hình */
+        border-width: 180px 272.5px 0 272.5px;
         border-color: #ffcce0 transparent transparent transparent;
         transform-origin: top;
         transition: transform 0.6s ease-in-out, z-index 0.2s;
@@ -209,12 +233,12 @@
         font-size: 18px;
       }
       
-      /* GIỮ NGUYÊN HELLO KITTY */
       .gif-container {
         position: absolute;
-        right: -150px; /* Điều chỉnh lại để không bị văng quá xa trên mobile */
+        right: -150px;
         top: 50%;
         transform: translateY(-50%);
+        transition: right 0.4s;
       }
       .gif-container img {
         width: 150px;
@@ -314,7 +338,6 @@
     </div>
 
     <script>
-      /* --- GIỮ NGUYÊN TOÀN BỘ LOGIC JS CỦA BẠN --- */
       const container = document.getElementById("envelopeContainer");
       const letter = document.getElementById("letter");
       const letterTwo = document.getElementById("letterTwo");
